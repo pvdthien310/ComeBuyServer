@@ -13,7 +13,6 @@ app.use(
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  var a = req.body;
   res.send('Hello my database');
 });
 require("./routes/computer.routes")(app);
