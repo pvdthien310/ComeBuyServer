@@ -7,13 +7,13 @@ module.exports = app => {
     router.get("/", accounts.findAll);
     // // Retrieve all published computers
     // router.get("/published", computers.findAllPublished);
-    // // Retrieve a single Tutorial with id
-    // router.get("/:id", computers.findOne);
-    // // Update a Tutorial with id
-    // router.put("/:id", computers.update);
-    // // Delete a Tutorial with id
-    // router.delete("/:id", computers.delete);
-    // // Create a new Tutorial
-    // router.delete("/", computers.deleteAll);
+    // Retrieve a single Tutorial with id
+    router.get("/:id", accounts.findOne);
+    // Update a Tutorial with id
+    router.put("/:id", accounts.update);
+    // Delete a Tutorial with id
+    router.delete("/:id", accounts.delete);
+    // Delete all Tutorials 
+    router.delete("/", accounts.deleteAll);
     app.use('/api/account', router);
   };
