@@ -5,6 +5,7 @@ require('dotenv').config();
 const port = process.env.PORT || 5000;
 
 connectDB_PostgresSQL();
+connectDB();
 
 const server = app.listen(port, () => {
   console.log(`App running on port ${port}...`);

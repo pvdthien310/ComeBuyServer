@@ -1,10 +1,11 @@
+const {authenToken} = require("../middlewares/authenMiddleware")
 module.exports = app => {
     const computers = require("../controller/computer.controller");
     var router = require("express").Router();
     // Create a new Tutorial
     router.post("/", computers.create);
     // Retrieve all computers
-    router.get("/", computers.findAll);
+    router.get("/", authenToken ,computers.findAll);
     // Retrieve all published computers
     router.get("/published", computers.findAllPublished);
     // Retrieve a single Tutorial with id

@@ -13,12 +13,15 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+//test connection
 app.get('/', (req, res) => {
   res.send('Hello my database');
 });
+
+//config route 
 require("./routes/computer.routes")(app);
 require("./routes/account.routes")(app);
-
+require("./routes/authentication.routes")(app);
 
 module.exports = app;
 
