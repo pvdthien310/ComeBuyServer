@@ -25,5 +25,6 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.computer = require("./computer.model.js")(sequelize, Sequelize);
+db.account = require("./account.model.js")(sequelize, Sequelize);
 
 module.exports = db;

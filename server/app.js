@@ -17,6 +17,8 @@ app.get('/', (req, res) => {
   res.send('Hello my database');
 });
 require("./routes/computer.routes")(app);
+require("./routes/account.routes")(app);
+
 
 module.exports = app;
 
