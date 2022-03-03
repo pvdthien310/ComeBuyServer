@@ -1,6 +1,7 @@
 const app = require('./app');
 const {connectDB} = require('./database');
 const {connectDB_PostgresSQL} = require('./database');
+require('dotenv').config();
 const port = process.env.PORT || 5000;
 
 connectDB_PostgresSQL();
