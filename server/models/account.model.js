@@ -1,37 +1,50 @@
 module.exports = (sequelize, Sequelize) => {
     const Account = sequelize.define("account", {
       userID: {
-        type: Sequelize.STRING
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
+        primaryKey: true,
+        field: 'userid',
       },
       phoneNumber: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        field: 'phonenumber'
       },
       name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        field: "name"
       },
       dob: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        field: "dob"
       },
       avatar: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        field:"avatar"
       },
       email: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        field:"email"
       },
       password: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        field:"password"
       },
       address: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        field: "address"
       },
       role: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        field:"role"
       },
       sex: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        field:"sex"
       },
       bio: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        field: "bio"
       },
     });
     return Account;

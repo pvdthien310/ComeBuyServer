@@ -1,5 +1,8 @@
 const dbConfig = require("../config/db.config.js");
 const Sequelize = require("sequelize");
+const fs = require('fs');
+const path = require('path');
+const basename = path.basename(__filename);
 const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.password, {
     host: dbConfig.host,
     dialect: dbConfig.dialect,
@@ -24,7 +27,22 @@ db.Sequelize = Sequelize;
 
 db.sequelize = sequelize;
 
-db.computer = require("./computer.model.js")(sequelize, Sequelize);
-db.account = require("./account.model.js")(sequelize, Sequelize);
+fs.readdirSync(__dirname)
+  .filter(file => {
+    return file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js' && file.indexOf("mongodb") == -1;
+  })
+  .forEach(file => {
+    const model = require(path.join(__dirname, file))(sequelize, Sequelize);
+    db[model.name] = model;
+  });
+
+Object.keys(db).forEach(modelName => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
+
+// db.computer = require("./computer.model.js")(sequelize, Sequelize);
+// db.account = require("./account.model.js")(sequelize, Sequelize);
 
 module.exports = db;
