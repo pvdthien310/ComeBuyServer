@@ -25,7 +25,6 @@ exports.create = (req, res) => {
     address: req.body.address,
     role: req.body.role,
     sex: req.body.sex,
-    userID: req.body.userID
   };
   // Save Account in the database
   Account.create(account)

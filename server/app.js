@@ -22,6 +22,11 @@ app.get('/', (req, res) => {
 require("./routes/computer.routes")(app);
 require("./routes/account.routes")(app);
 require("./routes/authentication.routes")(app);
+require("./routes/product.routes")(app);
+require("./routes/productImage.routes")(app);
+require("./routes/feature.routes")(app);
+
+
 
 module.exports = app;
 

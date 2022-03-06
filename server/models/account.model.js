@@ -46,6 +46,16 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
         field: "bio"
       },
+      
+    },
+    {
+      freezeTableName: true,
+
+      timestamps: false,
+
+      createdAt: false,
+
+      updatedAt: false,
     });
     return Account;
   };

@@ -50,9 +50,9 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.INTEGER,
             field: 'colorcoverage',
         },
-        externaIOPort: {
+        externalIOPort: {
             type: Sequelize.STRING,
-            field: 'externaioport',
+            field: 'externalioport',
         },
         battery: {
             type: Sequelize.STRING,
@@ -64,13 +64,28 @@ module.exports = (sequelize, Sequelize) => {
         },
         promotion: {
             type: Sequelize.STRING,
-            field: 'warranty',
+            field: 'promotion',
         },
-    });
+    },
+    {
+        freezeTableName: true,
+  
+        timestamps: false,
+  
+        createdAt: false,
+  
+        updatedAt: false,
+      });
     Product.associate = function (models) {
         Product.hasMany(models.productimage, {
-            foreignKey: 'productid',
+            as:"productimage",
+            foreignKey: "productid",
         });
+        Product.belongsToMany(models.feature, {
+            through: "product_feature",
+            as: "feature",
+            foreignKey: "productid",
+          });
     }
     return Product;
 };

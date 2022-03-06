@@ -1,27 +1,38 @@
 module.exports = (sequelize, Sequelize) => {
     const ProductImage = sequelize.define("productimage", {
-        userID: {
+        productImageID: {
             type: Sequelize.UUID,
             defaultValue: Sequelize.UUIDV4,
             primaryKey: true,
-            field: 'userid',
+            field: 'productimageid',
         },
-        ProductID: {
-            type: Sequelize.STRING,
-            field: 'productid'
+        productID: {
+            type: Sequelize.UUID,
+            defaultValue: Sequelize.UUIDV4,
+            field: 'productid',
         },
         imageURL: {
-            type: Sequelize.STRING,
+            type: Sequelize.STRING(512),
             field: 'imageurl'
         },
-    });
+    },
+    {
+        freezeTableName: true,
+  
+        timestamps: false,
+  
+        createdAt: false,
+  
+        updatedAt: false,
+      });
 
     ProductImage.associate = function (models) {
 
         ProductImage.belongsTo(models.product,
             {
                 foreignKey: 'productid',
-                onDelete: 'SET NULL',
+                // onDelete: 'SET NULL',
+              
             });
 
     }

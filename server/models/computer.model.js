@@ -12,6 +12,15 @@ module.exports = (sequelize, Sequelize) => {
       brand: {
         type: Sequelize.STRING
       }
+    },
+    {
+      freezeTableName: true,
+
+      timestamps: false,
+
+      createdAt: false,
+
+      updatedAt: false,
     });
     return Computer;
   };
