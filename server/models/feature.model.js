@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
     const Feature = sequelize.define("feature", {
-        featureid: {
+        featureID: {
             type: Sequelize.UUID,
             defaultValue: Sequelize.UUIDV4,
             primaryKey: true,

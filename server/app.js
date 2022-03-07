@@ -25,7 +25,7 @@ require("./routes/authentication.routes")(app);
 require("./routes/product.routes")(app);
 require("./routes/productImage.routes")(app);
 require("./routes/feature.routes")(app);
-
+require("./routes/notification.routes")(app);
 
 
 module.exports = app;

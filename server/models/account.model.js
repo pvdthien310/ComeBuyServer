@@ -57,5 +57,13 @@ module.exports = (sequelize, Sequelize) => {
 
       updatedAt: false,
     });
+   
+
+  Account.associate = function (models) {
+    Account.hasMany(models.notification, {
+      as:"notification",
+      foreignKey: "userid",
+  });
+}
     return Account;
   };
