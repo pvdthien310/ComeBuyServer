@@ -26,6 +26,15 @@ require("./routes/product.routes")(app);
 require("./routes/productImage.routes")(app);
 require("./routes/feature.routes")(app);
 require("./routes/notification.routes")(app);
+require("./routes/cart.routes")(app);
+require("./routes/comment.routes")(app);
+require("./routes/branch.routes")(app);
+require("./routes/invoice.routes")(app);
+require("./routes/invoiceItem.routes")(app);
+
+
+
+
 
 
 module.exports = app;

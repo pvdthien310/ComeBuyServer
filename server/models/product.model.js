@@ -50,6 +50,10 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.INTEGER,
             field: 'colorcoverage',
         },
+        price: {
+            type: Sequelize.INTEGER,
+            field: 'price',
+        },
         externalIOPort: {
             type: Sequelize.STRING,
             field: 'externalioport',
@@ -67,25 +71,31 @@ module.exports = (sequelize, Sequelize) => {
             field: 'promotion',
         },
     },
-    {
-        freezeTableName: true,
-  
-        timestamps: false,
-  
-        createdAt: false,
-  
-        updatedAt: false,
-      });
+        {
+            freezeTableName: true,
+
+            timestamps: false,
+
+            createdAt: false,
+
+            updatedAt: false,
+        });
     Product.associate = function (models) {
         Product.hasMany(models.productimage, {
-            as:"productimage",
+            as: "productimage",
+            foreignKey: "productid",
+        });
+        Product.hasMany(models.comment, {
+            as: "comment",
             foreignKey: "productid",
         });
         Product.belongsToMany(models.feature, {
             through: "product_feature",
             as: "feature",
             foreignKey: "productid",
-          });
+        });
+        Product.hasOne(models.cart, { foreignKey: 'productid' });
+        Product.hasOne(models.invoiceitem, { foreignKey: 'productid' });
     }
     return Product;
 };

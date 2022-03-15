@@ -1,6 +1,7 @@
 const db = require("../models");
 const Account = db.account;
 const Notification = db.notification;
+const Cart = db.cart;
 const Op = db.Sequelize.Op;
 const aes256 = require('aes256');
 // Create and Save a new Account
@@ -49,7 +50,13 @@ exports.findAll = (req, res) => {
         model: Notification,
         as: "notification",
         attributes: ["userID", "body","notiid"],
-      }
+      },
+      {
+        model: Cart,
+        as: "cart",
+        attributes: ["productid", "amount"],
+       
+    }
     ]
   })
     .then(data => {
@@ -85,7 +92,7 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
   const id = req.params.id;
   Account.update(req.body, {
-    where: { id: id }
+    where: { userID: id }
   })
     .then(num => {
       if (num == 1) {
@@ -108,7 +115,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
   const id = req.params.id;
   Account.destroy({
-    where: { id: id }
+    where: { userID: id }
   })
     .then(num => {
       if (num == 1) {

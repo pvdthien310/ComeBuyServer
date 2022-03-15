@@ -2,6 +2,7 @@ const db = require("../models");
 const Feature = db.feature;
 const Product = db.product;
 const ProductImage = db.productimage;
+const Comment = db.comment;
 const Op = db.Sequelize.Op;
 // Create and Save a new Product
 exports.create = (req, res) => {
@@ -64,6 +65,11 @@ exports.findAll = (req, res) => {
                 as: "productimage",
                 attributes: ["imageurl","productimageid"],
             },
+            {
+                model: Comment,
+                as: "comment",
+                attributes: ["userid","body"],
+            },
         ],
     })
         .then(data => {
@@ -122,7 +128,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
     const id = req.params.id;
     Product.destroy({
-        where: { id: id }
+        where: { productid: id }
     })
         .then(num => {
             if (num == 1) {
@@ -186,11 +192,11 @@ exports.addFeature = (req, res) => {
                     res.send(null);
                 }
                 prd.addFeature(feature);
-                res.send(`>> added Tutorial id=${prd.productID} to Tag id=${feature.featureID}`);
+                res.send(`>> added Product id=${prd.productID} to Feature id=${feature.featureID}`);
 
             });
         })
         .catch((err) => {
-            console.log(">> Error while adding Tutorial to Tag: ", err);
+            console.log(">> Error while adding Product to Feature: ", err);
         });
 };
