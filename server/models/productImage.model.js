@@ -32,7 +32,6 @@ module.exports = (sequelize, Sequelize) => {
             {
                 foreignKey: 'productid',
                 // onDelete: 'SET NULL',
-              
             });
 
     }

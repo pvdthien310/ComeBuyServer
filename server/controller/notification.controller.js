@@ -13,7 +13,8 @@ exports.create = (req, res) => {
     // Create a Notification
     const notification = {
        userID: req.body.userID,
-        body : req.body.body
+        body : req.body.body,
+        isSeen : false
     };
     // Save Notification in the database
     Notification.create(notification)
