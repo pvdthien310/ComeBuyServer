@@ -8,7 +8,7 @@ const aes256 = require('aes256');
 exports.create = (req, res) => {
   // Validate request
   console.log(req.body)
-  if (!req.body.name) {
+  if (!req.body.name || !req.body.email || !req.body.password) {
     res.status(400).send({
       message: "Content can not be empty!"
     });
