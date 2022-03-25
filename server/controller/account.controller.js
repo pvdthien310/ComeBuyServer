@@ -29,16 +29,29 @@ exports.create = (req, res) => {
     sex: req.body.sex,
   };
   // Save Account in the database
-  Account.create(account)
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the Account."
+  Account.findOne({ where: { email: req.body.email } })
+  .then (result => {
+    if (result == null)
+    {
+      Account.create(account)
+      .then(data => {
+        res.send(data);
+      })
+      .catch(err => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while creating the Account."
+        });
       });
-    });
+    }
+    else 
+    {
+      res.send("Account existed!")
+    }
+  })
+  .catch(err => console.log(err))
+  
+    
 };
 // Retrieve all Accounts from the database.
 exports.findAll = (req, res) => {
@@ -49,14 +62,14 @@ exports.findAll = (req, res) => {
       {
         model: Notification,
         as: "notification",
-        attributes: ["userID", "body","notiid"],
+        attributes: ["userID", "body", "notiid"],
       },
       {
         model: Cart,
         as: "cart",
         attributes: ["productid", "amount"],
-       
-    }
+
+      }
     ]
   })
     .then(data => {

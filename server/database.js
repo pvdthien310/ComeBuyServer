@@ -16,14 +16,14 @@ const connectDB = async () => {
 
 const connectDB_PostgresSQL = async () => {
   
-  // db.sequelize.sync().then(() => {   
-  //   console.log("Database connected successfully !");
-  // });
-        //      Test database, model
-  db.sequelize.sync({ force: true }).then(() => {
-    console.log("Drop and re-sync db.");
+  db.sequelize.sync().then(() => {   
     console.log("Database connected successfully !");
   });
+            //  Test database, model
+  // db.sequelize.sync({ force: true }).then(() => {
+  //   console.log("Drop and re-sync db.");
+  //   console.log("Database connected successfully !");
+  // });
   
 };
 
