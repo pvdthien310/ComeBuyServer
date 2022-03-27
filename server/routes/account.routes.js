@@ -8,6 +8,8 @@ module.exports = app => {
     // // Retrieve all published computers
     // Retrieve a single account with id
     router.get("/:id", accounts.findOne);
+    // Retrieve a single account with id
+    router.get("/email/:email", accounts.findOnebyEmail);
     // Update a account with id
     router.put("/:id", accounts.update);
     // Delete a account with id

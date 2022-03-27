@@ -22,6 +22,7 @@ exports.login = (req, res) => {
                         { "$push": { "refreshTokens": refreshToken } },
                         { "new": true, "upsert": true }
                     ).then((data) => {
+                        res.status(200) 
                         res.json({ accessToken, refreshToken });
 
                     })

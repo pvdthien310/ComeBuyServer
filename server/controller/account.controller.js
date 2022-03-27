@@ -101,6 +101,25 @@ exports.findOne = (req, res) => {
       });
     });
 };
+
+exports.findOnebyEmail = (req, res) => {
+  const email = req.params.email;
+  Account.findOne({where: {email : email}})
+    .then(data => {
+      if (data) {
+        res.send(data);
+      } else {
+        res.status(404).send({
+          message: `Cannot find Account with email=${email}.`
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Error retrieving Account with id=" + id
+      });
+    });
+};
 // Update a Account by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
