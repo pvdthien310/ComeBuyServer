@@ -1,6 +1,6 @@
 const app = require('./app');
-const {connectDB} = require('./database');
-const {connectDB_PostgresSQL} = require('./database');
+const { connectDB } = require('./database');
+const { connectDB_PostgresSQL } = require('./database');
 require('dotenv').config();
 const port = process.env.PORT || 5000;
 
@@ -25,3 +25,4 @@ process.on('unhandledRejection', (err) => {
     process.exit(1);
   });
 });
+
