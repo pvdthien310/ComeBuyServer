@@ -31,6 +31,7 @@ require("./routes/comment.routes")(app);
 require("./routes/branch.routes")(app);
 require("./routes/invoice.routes")(app);
 require("./routes/invoiceItem.routes")(app);
+require("./routes/email.routes")(app);
 
 
 
