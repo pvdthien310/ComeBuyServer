@@ -141,7 +141,7 @@ exports.findAll = (req, res) => {
             {
                 model: InvoiceItem,
                 as: "invoiceitem",
-                attributes: ["productid", "total"],
+                attributes: ["productid", "total","amount"],
                
             }
             ]
