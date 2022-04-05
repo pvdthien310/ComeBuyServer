@@ -4,6 +4,9 @@ const Product = db.product;
 const ProductImage = db.productimage;
 const Comment = db.comment;
 const Op = db.Sequelize.Op;
+const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError');
+const SendResponse = require('../utils/sendResponse');
 // Create and Save a new Product
 exports.create = (req, res) => {
     // Validate request
@@ -64,12 +67,12 @@ exports.findAll = (req, res) => {
             {
                 model: ProductImage,
                 as: "productimage",
-                attributes: ["imageurl","productimageid"],
+                attributes: ["imageurl", "productimageid"],
             },
             {
                 model: Comment,
                 as: "comment",
-                attributes: ["userid","body"],
+                attributes: ["userid", "body"],
             },
         ],
     })
@@ -84,7 +87,7 @@ exports.findAll = (req, res) => {
         });
 };
 // Find a single Product with an id
-exports.findOne = (req, res) => {
+exports.findOne = catchAsync((req, res) => {
     const id = req.params.id;
     Product.findByPk(id, {
         include: [
@@ -99,14 +102,15 @@ exports.findOne = (req, res) => {
             {
                 model: ProductImage,
                 as: "productimage",
-                attributes: ["imageurl","productimageid"],
+                attributes: ["imageurl", "productimageid"],
             },
             {
                 model: Comment,
                 as: "comment",
-                attributes: ["userid","body"],
+                attributes: ["userid", "body"],
             },
-        ]})
+        ]
+    })
         .then(data => {
             if (data) {
                 res.send(data);
@@ -121,30 +125,37 @@ exports.findOne = (req, res) => {
                 message: "Error retrieving Product with id=" + id
             });
         });
-};
+});
 // Update a Product by the id in the request
-exports.update = (req, res) => {
+exports.update = catchAsync(async (req, res, next) => {
     const id = req.params.id;
-    Product.update(req.body, {
-        where: { id: id }
+    const data = await Product.update(req.body, {
+        where: { productID: id }
     })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    message: "Product was updated successfully."
-                });
-            } else {
-                res.send({
-                    message: `Cannot update Product with id=${id}. Maybe Product was not found or req.body is empty!`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Error updating Product with id=" + id
-            });
-        });
-};
+    .catch(err => {
+        next(new AppError("Error updating Product with id=" + id, 500));
+    })
+    if (data == 1)
+        SendResponse("Product was updated successfully.",200, res)
+    else 
+    return next(new AppError(`Cannot update Product with id=${id}. Maybe Product was not found or req.body is empty!`, 400));
+        // .then(num => {
+        //     if (num == 1) {
+        //         res.send({
+        //             message: "Product was updated successfully."
+        //         });
+        //     } else {
+        //         res.send({
+        //             message: `Cannot update Product with id=${id}. Maybe Product was not found or req.body is empty!`
+        //         });
+        //     }
+        // })
+        // .catch(err => {
+        //     res.status(500).send({
+        //         message: "Error updating Product with id=" + id
+        //     });
+        // });
+});
 // Delete a Product with the specified id in the request
 exports.delete = (req, res) => {
     const id = req.params.id;

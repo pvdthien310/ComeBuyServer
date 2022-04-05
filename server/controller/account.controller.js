@@ -6,6 +6,7 @@ const Op = db.Sequelize.Op;
 const aes256 = require('aes256');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+const SendResponse = require('../utils/sendResponse');
 // Create and Save a new Account
 exports.create = (req, res) => {
   // Validate request
@@ -104,9 +105,7 @@ exports.findOne = (req, res) => {
 
 };
 
-const SendResponse = (data, statusCode, res) => {
-  res.status(statusCode).json(data);
-}
+
 
 exports.findOne1 = catchAsync(async (req, res,next) => {
   const id = req.params.id;
