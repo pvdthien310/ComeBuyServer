@@ -31,6 +31,7 @@ module.exports = (sequelize, Sequelize) => {
         ProductImage.belongsTo(models.product,
             {
                 foreignKey: 'productid',
+                as :"product"
                 // onDelete: 'SET NULL',
             });
 

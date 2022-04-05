@@ -86,7 +86,27 @@ exports.findAll = (req, res) => {
 // Find a single Product with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;
-    Product.findByPk(id)
+    Product.findByPk(id, {
+        include: [
+            {
+                model: Feature,
+                as: "feature",
+                attributes: ["featureid", "name"],
+                through: {
+                    attributes: [],
+                }
+            },
+            {
+                model: ProductImage,
+                as: "productimage",
+                attributes: ["imageurl","productimageid"],
+            },
+            {
+                model: Comment,
+                as: "comment",
+                attributes: ["userid","body"],
+            },
+        ]})
         .then(data => {
             if (data) {
                 res.send(data);
