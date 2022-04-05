@@ -180,7 +180,7 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
     const id = req.params.id;
     Invoice.update(req.body, {
-        where: { id: id }
+        where: { invoiceID: id }
     })
         .then(num => {
             if (num == 1) {
