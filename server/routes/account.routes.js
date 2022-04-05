@@ -7,7 +7,7 @@ module.exports = app => {
     router.get("/", accounts.findAll);
     // // Retrieve all published computers
     // Retrieve a single account with id
-    router.get("/:id", accounts.findOne);
+    router.get("/:id", accounts.findOne1);
     // Retrieve a single account with id
     router.get("/email/:email", accounts.findOnebyEmail);
     // Update a account with id

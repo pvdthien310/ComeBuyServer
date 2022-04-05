@@ -17,7 +17,7 @@ exports.login = (req, res) => {
                     const accessToken = jwt.sign(data, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30s' });
                     const refreshToken = jwt.sign(data, process.env.REFRESH_TOKEN_SECRET);
                     //// Update refreshTokens into database
-                    console.log(refreshToken)
+                    // console.log(refreshToken)
                     JWTRefTokens.findByIdAndUpdate('6220d47b4f634bc99c65b32a',
                         { "$push": { "refreshTokens": refreshToken } },
                         { "new": true, "upsert": true }

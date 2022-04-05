@@ -4,6 +4,8 @@ const Notification = db.notification;
 const Cart = db.cart;
 const Op = db.Sequelize.Op;
 const aes256 = require('aes256');
+const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError');
 // Create and Save a new Account
 exports.create = (req, res) => {
   // Validate request
@@ -30,28 +32,26 @@ exports.create = (req, res) => {
   };
   // Save Account in the database
   Account.findOne({ where: { email: req.body.email } })
-  .then (result => {
-    if (result == null)
-    {
-      Account.create(account)
-      .then(data => {
-        res.send(data);
-      })
-      .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "Some error occurred while creating the Account."
-        });
-      });
-    }
-    else 
-    {
-      res.send("Account existed!")
-    }
-  })
-  .catch(err => console.log(err))
-  
-    
+    .then(result => {
+      if (result == null) {
+        Account.create(account)
+          .then(data => {
+            res.send(data);
+          })
+          .catch(err => {
+            res.status(500).send({
+              message:
+                err.message || "Some error occurred while creating the Account."
+            });
+          });
+      }
+      else {
+        res.send("Account existed!")
+      }
+    })
+    .catch(err => console.log(err))
+
+
 };
 // Retrieve all Accounts from the database.
 exports.findAll = (req, res) => {
@@ -100,11 +100,30 @@ exports.findOne = (req, res) => {
         message: "Error retrieving Account with id=" + id
       });
     });
+
+
 };
+
+const SendResponse = (data, statusCode, res) => {
+  res.status(statusCode).json(data);
+}
+
+exports.findOne1 = catchAsync(async (req, res,next) => {
+  const id = req.params.id;
+  if (id == null) return next(new AppError("Error retrieving Account with id=" + id, 400));
+
+  const data = await Account.findByPk(id)
+
+  if (data)
+    SendResponse(data, 200, res)
+  else
+    return next(new AppError(`Cannot find Account with id=${id}.`, 400));
+   
+});
 
 exports.findOnebyEmail = (req, res) => {
   const email = req.params.email;
-  Account.findOne({where: {email : email}})
+  Account.findOne({ where: { email: email } })
     .then(data => {
       if (data) {
         res.send(data);
@@ -182,16 +201,3 @@ exports.deleteAll = (req, res) => {
       });
     });
 };
-// Find all published Accounts
-// exports.findAllPublished = (req, res) => {
-//     Account.findAll({ where: { official: true } })
-//     .then(data => {
-//       res.send(data);
-//     })
-//     .catch(err => {
-//       res.status(500).send({
-//         message:
-//           err.message || "Some error occurred while retrieving Accounts."
-//       });
-//     });
-// };

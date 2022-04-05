@@ -31,7 +31,7 @@ module.exports = (sequelize, Sequelize) => {
             field: 'brand',
         },
         description: {
-            type: Sequelize.STRING,
+            type: Sequelize.STRING(512),
             field: 'description',
         },
         weight: {
