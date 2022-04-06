@@ -2,6 +2,9 @@ const db = require("../models");
 const Feature = db.feature;
 const Product = db.product;
 const Op = db.Sequelize.Op;
+const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError');
+const SendResponse = require('../utils/sendResponse');
 // Create and Save a new Feature
 exports.create = (req, res) => {
     // Validate request
@@ -28,11 +31,8 @@ exports.create = (req, res) => {
         });
 };
 // Retrieve all Features from the database.
-exports.findAll = (req, res) => {
-    // const name = req.query.productID;
-    // var condition = name ? { productID: { [Op.iLike]: `%${name}%` } } : null;
-    // Feature.findAll({ where: condition })
-    Feature.findAll({
+exports.findAll = catchAsync( async (req, res,next) => {
+    const data = await Feature.findAll({
         include: [
             {
                 model: Product,
@@ -42,19 +42,14 @@ exports.findAll = (req, res) => {
                     attributes: [],
                 }
             }
-            
         ],
     })
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving Features."
-            });
-        });
-};
+    if (data)
+        SendResponse(data,200,res)
+    else 
+        return next(new AppError("Some error occurred while retrieving Features.", 400));
+    
+});
 // Find a single Feature with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;
