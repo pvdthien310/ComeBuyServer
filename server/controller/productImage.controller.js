@@ -1,6 +1,9 @@
 const db = require("../models");
 const ProductImage = db.productimage;
 const Op = db.Sequelize.Op;
+const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError');
+const SendResponse = require('../utils/sendResponse');
 // Create and Save a new ProductImage
 exports.create = (req, res) => {
     // Validate request
@@ -13,7 +16,7 @@ exports.create = (req, res) => {
     // Create a ProductImage
     const productImage = {
         productID: req.body.productID,
-        imageURL : req.body.imageURL
+        imageURL: req.body.imageURL
     };
     // Save ProductImage in the database
     ProductImage.create(productImage)
@@ -123,3 +126,29 @@ exports.deleteAll = (req, res) => {
             });
         });
 };
+
+exports.deleteImagesOfProduct = catchAsync(async (req, res, next) => {
+    const id = req.params.productID;
+    const data = await ProductImage.destroy({
+        where: { productID: id }
+    }).catch(err => {
+        next(new AppError("Error delete ProductImage with ProductID=" + id, 500));
+    })
+    if (data >= 1) {
+        SendResponse({ message: "ProductImage was deleted successfully!" }, 200, res)
+    } 
+    else if (data == 0)  SendResponse({ message: "Maybe, There is no image for this product!" }, 200, res)
+    else {
+        return new AppError(`Cannot delete ProductImage with Product=${id}`, 400);
+    }
+});
+
+exports.AddManyImage = catchAsync(async (req,res,next) => {
+    const Images = req.body;
+    const data = await ProductImage.bulkCreate(Images).catch(err => {
+        next(new AppError("Error Add Many ProductImage with ProductID", 500));
+    })
+    if (data) SendResponse(data,200,res)
+    else  next(new AppError("Error Add Many Images ProductID", 400));
+
+})
