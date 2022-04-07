@@ -67,7 +67,7 @@ exports.findAll = (req, res) => {
             {
                 model: ProductImage,
                 as: "productimage",
-                attributes: ["imageurl", "productimageid"],
+                attributes: ["imageurl", "productImageID"],
             },
             {
                 model: Comment,
@@ -102,7 +102,7 @@ exports.findOne = catchAsync((req, res) => {
             {
                 model: ProductImage,
                 as: "productimage",
-                attributes: ["imageurl", "productimageid"],
+                attributes: ["imageurl", "productImageID"],
             },
             {
                 model: Comment,
