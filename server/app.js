@@ -10,8 +10,8 @@ app.use(
     credentials: true,
   }),
 );
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 //test connection
 app.get('/', (req, res) => {
@@ -32,11 +32,7 @@ require("./routes/branch.routes")(app);
 require("./routes/invoice.routes")(app);
 require("./routes/invoiceItem.routes")(app);
 require("./routes/email.routes")(app);
-
-
-
-
-
+require("./routes/cloudinary.routes")(app);
 
 module.exports = app;
 
