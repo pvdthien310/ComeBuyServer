@@ -232,6 +232,7 @@ exports.addFeature = catchAsync(async (req, res, next) => {
 exports.deleteAndUpdateFeature = catchAsync(async (req, res, next) => {
     const productId = req.body.productID
     const featureId = req.body.featureID
+    console.log(req.body)
     const prd = await Product.findByPk(productId)
         .catch((err) => {
             return next(new AppError(">> Error while finding Product: " + err, 500))
@@ -244,7 +245,7 @@ exports.deleteAndUpdateFeature = catchAsync(async (req, res, next) => {
     //     if (!feature) {
     //         return next(new AppError("Product not found!", 404))
     //     }
-     await prd.setFeature(featureId);
-        SendResponse(`>> update Product id=${prd.productID} to Feature successfully`, 200, res)
+    await prd.setFeature(featureId);
+    SendResponse(`>> update Product id=${prd.productID} to Feature successfully`, 200, res)
     // }); 
 });
