@@ -13,6 +13,8 @@ module.exports = app => {
     router.delete("/:id", products.delete);
     // Delete all products 
     router.delete("/", products.deleteAll);
+    // Delete and update feature product
+    router.delete("/delete/Feature", products.deleteAndUpdateFeature);
     // Add feature for product
     router.put("/:productId/:featureId", products.addFeature)
     app.use('/api/product', router);

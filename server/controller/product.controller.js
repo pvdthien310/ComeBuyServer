@@ -132,29 +132,29 @@ exports.update = catchAsync(async (req, res, next) => {
     const data = await Product.update(req.body, {
         where: { productID: id }
     })
-    .catch(err => {
-        next(new AppError("Error updating Product with id=" + id, 500));
-    })
+        .catch(err => {
+            next(new AppError("Error updating Product with id=" + id, 500));
+        })
     if (data == 1)
-        SendResponse("Product was updated successfully.",200, res)
-    else 
-    return next(new AppError(`Cannot update Product with id=${id}. Maybe Product was not found or req.body is empty!`, 400));
-        // .then(num => {
-        //     if (num == 1) {
-        //         res.send({
-        //             message: "Product was updated successfully."
-        //         });
-        //     } else {
-        //         res.send({
-        //             message: `Cannot update Product with id=${id}. Maybe Product was not found or req.body is empty!`
-        //         });
-        //     }
-        // })
-        // .catch(err => {
-        //     res.status(500).send({
-        //         message: "Error updating Product with id=" + id
-        //     });
-        // });
+        SendResponse("Product was updated successfully.", 200, res)
+    else
+        return next(new AppError(`Cannot update Product with id=${id}. Maybe Product was not found or req.body is empty!`, 400));
+    // .then(num => {
+    //     if (num == 1) {
+    //         res.send({
+    //             message: "Product was updated successfully."
+    //         });
+    //     } else {
+    //         res.send({
+    //             message: `Cannot update Product with id=${id}. Maybe Product was not found or req.body is empty!`
+    //         });
+    //     }
+    // })
+    // .catch(err => {
+    //     res.status(500).send({
+    //         message: "Error updating Product with id=" + id
+    //     });
+    // });
 });
 // Delete a Product with the specified id in the request
 exports.delete = (req, res) => {
@@ -209,26 +209,42 @@ exports.findAllPublished = (req, res) => {
         });
 };
 
-exports.addFeature = (req, res) => {
+exports.addFeature = catchAsync(async (req, res, next) => {
     const productId = req.params.productId
     const featureId = req.params.featureId
-    Product.findByPk(productId)
-        .then((prd) => {
-            if (!prd) {
-                console.log("Product not found!");
-                res.send(null);
-            }
-            return Feature.findByPk(featureId).then((feature) => {
-                if (!feature) {
-                    console.log("Feature not found!");
-                    res.send(null);
-                }
-                prd.addFeature(feature);
-                res.send(`>> added Product id=${prd.productID} to Feature id=${feature.featureID}`);
-
-            });
-        })
+    const prd = await Product.findByPk(productId)
         .catch((err) => {
-            console.log(">> Error while adding Product to Feature: ", err);
+            return next(new AppError(">> Error while adding Product to Feature: " + err, 500))
         });
-};
+
+    if (!prd) {
+        return next(new AppError("Product not found!", 404))
+    }
+    return Feature.findByPk(featureId).then((feature) => {
+        if (!feature) {
+            return next(new AppError("Product not found!", 404))
+        }
+        prd.addFeature(feature);
+        SendResponse(`>> added Product id=${prd.productID} to Feature id=${feature.featureID}`, 200, res)
+    });
+});
+
+exports.deleteAndUpdateFeature = catchAsync(async (req, res, next) => {
+    const productId = req.body.productID
+    const featureId = req.body.featureID
+    const prd = await Product.findByPk(productId)
+        .catch((err) => {
+            return next(new AppError(">> Error while finding Product: " + err, 500))
+        });
+
+    if (!prd) {
+        return next(new AppError("Product not found!", 404))
+    }
+    // return Feature.findByPk(featureId).then(async (feature) => {
+    //     if (!feature) {
+    //         return next(new AppError("Product not found!", 404))
+    //     }
+     await prd.setFeature(featureId);
+        SendResponse(`>> update Product id=${prd.productID} to Feature successfully`, 200, res)
+    // }); 
+});
