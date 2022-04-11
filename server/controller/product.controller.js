@@ -8,12 +8,13 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const SendResponse = require('../utils/sendResponse');
 // Create and Save a new Product
-exports.create = (req, res) => {
+exports.create = catchAsync(async (req, res, next) => {
+
     // Validate request
-    if (!req.body.name) {
-        res.status(400).send({
+    if (!req.body.name || !req.body.memory) {
+        next(AppError({
             message: "Content can not be empty!"
-        });
+        }, 400))
         return;
     }
     // Create a Product
@@ -37,19 +38,15 @@ exports.create = (req, res) => {
         promotion: req.body.promotion,
         price: req.body.price
     };
-
     // Save Product in the database
-    Product.create(product)
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while creating the Product."
-            });
-        });
-};
+    const data = await Product.create(product)
+    if (data)
+        SendResponse(data, 200, res)
+    else next(new AppError({
+        message:
+            err.message || "Some error occurred while creating the Product."
+    }, 500))
+});
 // Retrieve all Products from the database.
 exports.findAll = (req, res) => {
     const name = req.query.name;
@@ -157,28 +154,27 @@ exports.update = catchAsync(async (req, res, next) => {
     // });
 });
 // Delete a Product with the specified id in the request
-exports.delete = (req, res) => {
+exports.delete = catchAsync(async (req, res, next) => {
     const id = req.params.id;
-    Product.destroy({
-        where: { productid: id }
-    })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    message: "Product was deleted successfully!"
-                });
-            } else {
-                res.send({
-                    message: `Cannot delete Product with id=${id}. Maybe Product was not found!`
-                });
-            }
+    try {
+        const num = await Product.destroy({
+            where: { productid: id }
         })
-        .catch(err => {
-            res.status(500).send({
-                message: "Could not delete Product with id=" + id
-            });
-        });
-};
+        if (num && num == 1) {
+            SendResponse({ message: "Product was deleted successfully!" }, 200, res)
+        }
+        else
+            next(new AppError({
+                message: `Cannot delete Product with id=${id}. Maybe Product was not found!`
+            }, 404))
+    }
+    catch (e) {
+        next(new AppError({
+            message: `Error` + e
+        }, 500))
+        console.log(e)
+    }
+});
 // Delete all Products from the database.
 exports.deleteAll = (req, res) => {
     Product.destroy({

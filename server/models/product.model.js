@@ -31,7 +31,7 @@ module.exports = (sequelize, Sequelize) => {
             field: 'brand',
         },
         description: {
-            type: Sequelize.STRING(512),
+            type: Sequelize.STRING(2000),
             field: 'description',
         },
         weight: {
@@ -70,6 +70,10 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             field: 'promotion',
         },
+        // year: {
+        //     type: Sequelize.INTEGER,
+        //     field: 'year',
+        // }
     },
         {
             freezeTableName: true,
