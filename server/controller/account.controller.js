@@ -83,40 +83,29 @@ exports.findAll = (req, res) => {
     });
 };
 // Find a single Account with an id
-exports.findOne = (req, res) => {
-  const id = req.params.id;
-  Account.findByPk(id)
-    .then(data => {
-      if (data) {
-        res.send(data);
-      } else {
-        res.status(404).send({
-          message: `Cannot find Account with id=${id}.`
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Error retrieving Account with id=" + id
-      });
-    });
-
-
-};
-
-
-
-exports.findOne1 = catchAsync(async (req, res,next) => {
+exports.findOne = catchAsync(async (req, res, next) => {
   const id = req.params.id;
   if (id == null) return next(new AppError("Error retrieving Account with id=" + id, 400));
 
-  const data = await Account.findByPk(id)
-
+  const data = await Account.findByPk(id,{
+      include: [
+        {
+          model: Notification,
+          as: "notification",
+          attributes: ["userID", "body", "notiid"],
+        },
+        {
+          model: Cart,
+          as: "cart",
+          attributes: ["productid", "amount"],
+        }
+      ]
+  })
   if (data)
     SendResponse(data, 200, res)
   else
     return next(new AppError(`Cannot find Account with id=${id}.`, 400));
-   
+
 });
 
 exports.findOnebyEmail = (req, res) => {
@@ -138,28 +127,42 @@ exports.findOnebyEmail = (req, res) => {
     });
 };
 // Update a Account by the id in the request
-exports.update = (req, res) => {
+exports.update = catchAsync(async (req, res, next) => {
   const id = req.params.id;
-  Account.update(req.body, {
-    where: { userID: id }
-  })
-    .then(num => {
-      if (num == 1) {
-        res.send({
-          message: "Account was updated successfully."
-        });
-      } else {
-        res.send({
-          message: `Cannot update Account with id=${id}. Maybe Account was not found or req.body is empty!`
-        });
-      }
-    })
+
+  const num = await Account.update(req.body, { where: { userID: id } })
     .catch(err => {
-      res.status(500).send({
+      next(new AppError({
         message: "Error updating Account with id=" + id
-      });
-    });
-};
+      }, 500))
+    })
+  if (num == 1) {
+    const data = await Account.findByPk(id,{
+      include: [
+        {
+          model: Notification,
+          as: "notification",
+          attributes: ["userID", "body", "notiid"],
+        },
+        {
+          model: Cart,
+          as: "cart",
+          attributes: ["productid", "amount"],
+        }
+      ]
+  })
+    if (!data) next(new AppError({
+      message: `Error Get new Product`
+    }, 404))
+    else
+      SendResponse(data, 200, res)
+  }
+  else {
+    next(new AppError({
+      message: `Cannot update Account with id=${id}. Maybe Account was not found or req.body is empty!`
+    }, 404))
+  }
+});
 // Delete a Account with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
