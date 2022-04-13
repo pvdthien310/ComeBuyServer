@@ -3,17 +3,22 @@ const Account = db.account;
 const Notification = db.notification;
 const Cart = db.cart;
 const Op = db.Sequelize.Op;
+const Branch = db.branch;
 const aes256 = require('aes256');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const SendResponse = require('../utils/sendResponse');
+const { isEmpty } = require("../utils/validate");
 // Create and Save a new Account
-exports.create = (req, res) => {
+exports.create = catchAsync(async (req, res, next) => {
   // Validate request
   if (!req.body.name || !req.body.email || !req.body.password) {
-    res.status(400).send({
-      message: "Content can not be empty!"
-    });
+    next(new AppError("Some params is missing or null!", 404))
+    return;
+  }
+  else if (req.body.role == 'admin')
+  {
+    next(new AppError("Role is not allowed to be admin", 500))
     return;
   }
   // Create a Account
@@ -31,28 +36,50 @@ exports.create = (req, res) => {
     sex: req.body.sex,
   };
   // Save Account in the database
-  Account.findOne({ where: { email: req.body.email } })
-    .then(result => {
-      if (result == null) {
-        Account.create(account)
-          .then(data => {
-            res.send(data);
-          })
-          .catch(err => {
-            res.status(500).send({
-              message:
-                err.message || "Some error occurred while creating the Account."
-            });
-          });
+  const result = await Account.findOne({ where: { email: req.body.email } })
+    if (result == null) {
+      /// Handle Manager Role
+      if (req.body.role == 'manager') {
+        if (isEmpty(req.body.branchAddress))
+          next(new AppError("Branch address is null or empty", 405))
+        else {
+          const response = await Account.create(account)
+          if (response) {
+            const branch = {
+              address: req.body.branchAddress,
+              userid: response.userID
+            };
+            const data = await Branch.create(branch)
+            if (data) {
+              SendResponse({
+                message:
+                  "Add Manager Successfully"
+              }, 200, res)
+            }
+            else {
+              next(new AppError(
+                   "Some error occurred while creating the Branch.", 500))
+            }
+          }
+          else
+            next(new AppError(
+                "Some error occurred while creating the Account.", 500))
+        }
       }
+      ///// Handle Another Role != Manager
       else {
-        res.send("Account existed!")
+        const response = await Account.create(account)
+        if (response)
+          SendResponse(response, 200, res)
+        else
+          next(new AppError(
+              "Some error occurred while creating the Account.", 500))
       }
-    })
-    .catch(err => console.log(err))
-
-
-};
+    }
+    else {
+      next(new AppError("Account is Existed!", 409))
+    }
+});
 // Retrieve all Accounts from the database.
 exports.findAll = (req, res) => {
   const name = req.query.name;
@@ -68,7 +95,11 @@ exports.findAll = (req, res) => {
         model: Cart,
         as: "cart",
         attributes: ["productid", "amount"],
-
+      },
+      {
+        model: Branch,
+        as: "branch",
+        attributes: ["branchid", "address"],
       }
     ]
   })
@@ -87,19 +118,19 @@ exports.findOne = catchAsync(async (req, res, next) => {
   const id = req.params.id;
   if (id == null) return next(new AppError("Error retrieving Account with id=" + id, 400));
 
-  const data = await Account.findByPk(id,{
-      include: [
-        {
-          model: Notification,
-          as: "notification",
-          attributes: ["userID", "body", "notiid"],
-        },
-        {
-          model: Cart,
-          as: "cart",
-          attributes: ["productid", "amount"],
-        }
-      ]
+  const data = await Account.findByPk(id, {
+    include: [
+      {
+        model: Notification,
+        as: "notification",
+        attributes: ["userID", "body", "notiid"],
+      },
+      {
+        model: Cart,
+        as: "cart",
+        attributes: ["productid", "amount"],
+      }
+    ]
   })
   if (data)
     SendResponse(data, 200, res)
@@ -137,7 +168,7 @@ exports.update = catchAsync(async (req, res, next) => {
       }, 500))
     })
   if (num == 1) {
-    const data = await Account.findByPk(id,{
+    const data = await Account.findByPk(id, {
       include: [
         {
           model: Notification,
@@ -150,7 +181,7 @@ exports.update = catchAsync(async (req, res, next) => {
           attributes: ["productid", "amount"],
         }
       ]
-  })
+    })
     if (!data) next(new AppError({
       message: `Error Get new Product`
     }, 404))
@@ -164,28 +195,29 @@ exports.update = catchAsync(async (req, res, next) => {
   }
 });
 // Delete a Account with the specified id in the request
-exports.delete = (req, res) => {
+exports.delete = catchAsync(async (req, res, next) => {
   const id = req.params.id;
-  Account.destroy({
+  const num = await Account.destroy({
     where: { userID: id }
+  }).catch(err => {
+    next(new AppError({
+      message: "Could not delete Account with id=" + id,
+      error: err
+    }, 500))
   })
-    .then(num => {
-      if (num == 1) {
-        res.send({
-          message: "Account was deleted successfully!"
-        });
-      } else {
-        res.send({
-          message: `Cannot delete Account with id=${id}. Maybe Account was not found!`
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Could not delete Account with id=" + id
-      });
-    });
-};
+
+  if (num == 1) {
+    SendResponse({
+      message: "Account was deleted successfully!"
+    }, 200, res)
+  }
+  else {
+    next(new AppError({
+      message: `Cannot delete Account with id=${id}. Maybe Account was not found!`
+    }, 404))
+  }
+
+});
 // Delete all Accounts from the database.
 exports.deleteAll = (req, res) => {
   Account.destroy({

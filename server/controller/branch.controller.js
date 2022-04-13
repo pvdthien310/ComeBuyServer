@@ -2,13 +2,16 @@ const db = require("../models");
 const Branch = db.branch;
 const Account = db.account;
 const Op = db.Sequelize.Op;
+const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError');
+const SendResponse = require('../utils/sendResponse');
 // Create and Save a new Branch
-exports.create = (req, res) => {
+exports.create =catchAsync(async (req, res, next) => {
     // Validate request
     if (!req.body.address || !req.body.userID) {
-        res.status(400).send({
+        next(new AppError({
             message: "Content can not be empty!"
-        });
+        },400))
         return;
     }
     // Create a Branch
@@ -17,17 +20,18 @@ exports.create = (req, res) => {
        userid: req.body.userID
     };
     // Save Branch in the database
-    Branch.create(branch)
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while creating the Branch."
-            });
-        });
-};
+    const data = await Branch.create(branch)
+    if (data)
+    {
+        SendResponse(data,200,res)
+    }
+    else{
+        next(new AppError({
+            message:
+                err.message || "Some error occurred while creating the Branch."
+        },500))
+    }
+});
 // Retrieve all Branchs from the database.
 exports.findAll = (req, res) => {
     Branch.findAll({
