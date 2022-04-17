@@ -33,6 +33,7 @@ require("./routes/invoice.routes")(app);
 require("./routes/invoiceItem.routes")(app);
 require("./routes/email.routes")(app);
 require("./routes/cloudinary.routes")(app);
+require("./routes/stock.routes")(app);
 
 module.exports = app;
 
