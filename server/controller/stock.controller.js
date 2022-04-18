@@ -80,7 +80,7 @@ exports.findOne = (req, res) => {
 };
 exports.findbyBranch = catchAsync(async (req, res, next) => {
     const id = req.params.id;
-    const data = await Stock.findAll({ 
+    const data = await Stock.findAll({
         where: { branchid: id },
         include: [
             {
@@ -94,7 +94,8 @@ exports.findbyBranch = catchAsync(async (req, res, next) => {
                 attributes: ["branchid", "address"],
 
             },
-        ] })
+        ]
+    })
         .catch(err =>
             next(new AppError("Error : " + err, 500)))
     if (data)
@@ -103,51 +104,29 @@ exports.findbyBranch = catchAsync(async (req, res, next) => {
         next(new AppError(`Cannot find Stock with branch id=${id}.`, 404))
 });
 // Update a Stock by the id in the request
-exports.update = (req, res) => {
+exports.update = catchAsync(async (req, res, next) => {
     const id = req.params.id;
-    Stock.update(req.body, {
-        where: { id : id }
-    })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    message: "Stock was updated successfully."
-                });
-            } else {
-                res.send({
-                    message: `Cannot update Stock with id=${id}. Maybe Stock was not found or req.body is empty!`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Error updating Stock with id=" + id
-            });
-        });
-};
+    const num = await Stock.update({ remaining: req.body.remaining, totalAmount: req.body.totalAmount }, {
+        where: { id: id }
+    }).catch(err =>
+        next(new AppError("Error: " + err, 500)))
+
+    if (num == 1)
+        SendResponse("Stock was updated successfully.", 200, res)
+    else next(new AppError(`Cannot update Stock with id=${id}. Maybe Stock was not found or req.body is empty!`, 404))
+});
 // Delete a Stock with the specified id in the request
-exports.delete = (req, res) => {
+exports.delete = catchAsync(async (req, res, next) => {
     const id = req.params.id;
-    Stock.destroy({
-        where: { stockID: id }
-    })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    message: "Stock was deleted successfully!"
-                });
-            } else {
-                res.send({
-                    message: `Cannot delete Stock with id=${id}. Maybe Stock was not found!`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Could not delete Stock with id=" + id
-            });
-        });
-};
+    const num = await Stock.destroy({
+        where: { id: id }
+    }).catch(err =>
+        next(new AppError("Error : " + err, 500)))
+
+    if (num == 1)
+        SendResponse("Stock was deleted successfully!", 200, res)
+    else next(new AppError(`Cannot delete Stock with id=${id}. Maybe Stock was not found!`, 404))
+});
 // Delete all Stocks from the database.
 exports.deleteAll = (req, res) => {
     Stock.destroy({
