@@ -81,7 +81,6 @@ exports.findOne = (req, res) => {
 exports.update = catchAsync(async (req, res, next) => {
     const id = req.params.id;
     if (!await checkRole(req.body.userID)) {
-        console.log('aaaa')
         next(new AppError("Account is not Manager!", 500))
         return
     }

@@ -39,45 +39,54 @@ exports.create = catchAsync(async (req, res, next) => {
   if (result == null) {
     /// Handle Manager Role
     if (req.body.role == 'manager') {
-      if (isEmpty(req.body.branchAddress))
+      if (isEmpty(req.body.branchAddress) && req.body.branchID == "")
         next(new AppError("Branch address is null or empty", 405))
       else {
         const response = await Account.create(account)
         if (response) {
-          const branch = {
-            address: req.body.branchAddress,
-            userid: response.userID
-          };
-          const data = await Branch.create(branch)
-          if (data) {
-            SendResponse({
-              message:
-                "Add Manager Successfully"
-            }, 200, res)
+          /// new branch
+          if (req.body.branchAddress != "") {
+            const branch = {
+              address: req.body.branchAddress,
+              userid: response.userID
+            };
+            const data = await Branch.create(branch)
+            if (data)
+              SendResponse("Add Manager with new branch successfully", 200, res)
+            else next(new AppError("Some error occurred while creating the Branch.", 500))
           }
+          /// existed branch
           else {
-            next(new AppError(
-              "Some error occurred while creating the Branch.", 500))
+            console.log('aaa')
+            console.log(response.userID)
+            console.log(req.body.branchID)
+            const num = await Branch.update({
+              userid: response.userID,
+              branchID: req.body.branchID
+            }, { where: { branchID: req.body.branchID } })
+              .catch(err => {
+                next(new AppError("Error updating Branch with id=" + id + ", Error: " + err, 500))
+              })
+            console.log(num)
+            if (num == 1)
+              SendResponse("Add Manager with existed branch successfully", 200, res)
+            else
+              next(new AppError("Some error occurred while creating the Branch.", 500))
           }
+
+
         }
-        else
-          next(new AppError(
-            "Some error occurred while creating the Account.", 500))
+        else next(new AppError("Some error occurred while creating the Account.", 500))
       }
     }
     ///// Handle Another Role != Manager
     else {
       const response = await Account.create(account)
-      if (response)
-        SendResponse(response, 200, res)
-      else
-        next(new AppError(
-          "Some error occurred while creating the Account.", 500))
+      if (response) SendResponse(response, 200, res)
+      else next(new AppError("Some error occurred while creating the Account.", 500))
     }
   }
-  else {
-    next(new AppError("Account is Existed!", 409))
-  }
+  else next(new AppError("Account is Existed!", 409))
 });
 // Retrieve all Accounts from the database.
 exports.findAll = catchAsync(async (req, res, next) => {
@@ -149,11 +158,10 @@ exports.findOnebyEmail = catchAsync(async (req, res, next) => {
 exports.update = catchAsync(async (req, res, next) => {
   const id = req.params.id;
 
-  if (req.body.password)
-    {
-      delete req.body.password
-      delete req.body.email
-    }
+  if (req.body.password) {
+    delete req.body.password
+    delete req.body.email
+  }
 
   const num = await Account.update(req.body, { where: { userID: id } })
     .catch(err => {
@@ -187,7 +195,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   const id = req.params.id;
   aes256_password = aes256.encrypt(process.env.SECRET_KEY_HASH, req.body.password).toString()
 
-  const num = await Account.update({"password" : aes256_password}, { where: { userID: id } })
+  const num = await Account.update({ "password": aes256_password }, { where: { userID: id } })
     .catch(err => {
       next(new AppError("Error updating Account with id=" + id, 500))
     })
