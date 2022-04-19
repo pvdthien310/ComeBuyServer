@@ -1,18 +1,18 @@
 module.exports = app => {
-    const branchs = require("../controller/branch.controller");
+    const branch = require("../controller/branch.controller");
     var router = require("express").Router();
     // Create a new product image
-    router.post("/", branchs.create);
+    router.post("/", branch.create);
     // Retrieve all product images
-    router.get("/", branchs.findAll);
+    router.get("/", branch.findAll);
     // Retrieve a single product image with id
-    router.get("/:id", branchs.findOne);
+    router.get("/:id", branch.findOne);
     // Update a product image with id
-    router.put("/:id", branchs.update);
+    router.put("/:id", branch.update);
     // Delete a product image with id
-    router.delete("/:id", branchs.delete);
+    router.delete("/:id", branch.delete);
     // Delete all product images
-    router.delete("/", branchs.deleteAll);
+    router.delete("/", branch.deleteAll);
     // Add feature for product image
     app.use('/api/branch', router);
   };

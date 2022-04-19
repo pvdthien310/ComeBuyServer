@@ -30,6 +30,10 @@ module.exports = (sequelize, Sequelize) => {
             as: "invoice",
             foreignKey: "branchid",
         });
+        Branch.hasOne(models.stock, {
+            foreignKey: 'branchid',
+            onDelete: 'NO ACTION'
+        });
     }
     return Branch;
 };

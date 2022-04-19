@@ -100,6 +100,10 @@ module.exports = (sequelize, Sequelize) => {
         });
         Product.hasOne(models.cart, { foreignKey: 'productid' });
         Product.hasOne(models.invoiceitem, { foreignKey: 'productid' });
+        Product.hasOne(models.stock, {
+            foreignKey: 'productid',
+            onDelete: 'NO ACTION'
+        });
     }
     return Product;
 };

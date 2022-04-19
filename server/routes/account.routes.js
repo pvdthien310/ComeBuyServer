@@ -12,6 +12,8 @@ module.exports = app => {
     router.get("/email/:email", accounts.findOnebyEmail);
     // Update a account with id
     router.put("/:id", accounts.update);
+    /// Update password
+    router.put("/updatePassword/:id", accounts.updatePassword);
     // Delete a account with id
     router.delete("/:id", accounts.delete);
     // Delete all accounts 
