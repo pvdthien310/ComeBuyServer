@@ -7,6 +7,8 @@ module.exports = app => {
     router.post("/decrease", invoice.decrease);
     // Retrieve all product images
     router.get("/", invoice.findAll);
+    // get Revenue of Branch by branchid
+    router.get("/revenueByBranchID/:id", invoice.getRevenueInBrach);
     // Retrieve a single product image with id
     router.get("/:id", invoice.findOne);
     // Update a product image with id

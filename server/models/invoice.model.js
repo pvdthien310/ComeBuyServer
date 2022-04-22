@@ -11,11 +11,11 @@ module.exports = (sequelize, Sequelize) => {
             field: 'date',
             default: 1
         },
-        total: {
-            type: Sequelize.STRING,
-            field: 'total',
-            default: 1
-        },
+        // total: {
+        //     type: Sequelize.STRING,
+        //     field: 'total',
+        //     default: 1
+        // },
         moneyReceived: {
             type: Sequelize.STRING,
             field: 'moneyreceived',

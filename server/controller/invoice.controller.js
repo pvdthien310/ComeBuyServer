@@ -4,6 +4,9 @@ const Account = db.account;
 const Branch = db.branch;
 const InvoiceItem = db.invoiceitem;
 const Op = db.Sequelize.Op;
+const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError');
+const SendResponse = require('../utils/sendResponse');
 // Create and Save a new Invoice
 exports.create = (req, res) => {
     // Validate request
@@ -127,25 +130,25 @@ exports.findAll = (req, res) => {
     Invoice.findAll(
         {
             include: [
-              {
-                model: Account,
-                as: "account",
-                attributes: ["userid", "name"],
-              },
-              {
-                model: Branch,
-                as: "branch",
-                attributes: ["branchid", "address"],
-               
-            },           
-            {
-                model: InvoiceItem,
-                as: "invoiceitem",
-                attributes: ["productid", "total","amount"],
-               
-            }
+                {
+                    model: Account,
+                    as: "account",
+                    attributes: ["userid", "name"],
+                },
+                {
+                    model: Branch,
+                    as: "branch",
+                    attributes: ["branchid", "address"],
+
+                },
+                {
+                    model: InvoiceItem,
+                    as: "invoiceitem",
+                    attributes: ["productid", "total", "amount"],
+
+                }
             ]
-          }
+        }
     )
         .then(data => {
             res.send(data);
@@ -238,3 +241,68 @@ exports.deleteAll = (req, res) => {
             });
         });
 };
+
+exports.getRevenueInBrach = catchAsync(async (req, res, next) => {
+    const id = req.params.id;
+    const data = await Invoice.findAll({
+        where: { branchid: id },
+        include: [
+            {
+                model: Account,
+                as: "account",
+                attributes: ["userid", "name"],
+            },
+            {
+                model: InvoiceItem,
+                as: "invoiceitem",
+                attributes: ["productid", "total", "amount"],
+
+            }
+        ]
+    }).catch(err => {
+        next(new AppError("Error : " + err, 500))
+    })
+
+    // {
+    //     name: 'Page F',
+    //     Profit: 2390,
+    //     Amount: 3800,
+    //     amt: 2500,
+    //   }
+    if (data) {
+        let result = []
+        data.map((item) => result = result.concat(item.invoiceitem))
+        result = result.filter((item) => item.productid != null)
+        let result2 = []
+        for (i = 0; i < result.length; i++) {
+            let checker = result2.some(e => e.name == result[i].productid)
+            // console.log(checker)
+            // console.log(result2)
+            if (!checker) {
+                result2.push({
+                    name: result[i].productid,
+                    Profit:  result[i].total,
+                    Amount:  result[i].amount,
+                })
+            }
+            else 
+            {
+                result2 = result2.map((item) => {
+                    if (item.name == result[i].productid)
+                    {
+                        return {
+                            name: result[i].productid,
+                            Profit:  Number(result[i].total) + Number(item.Profit),
+                            Amount:  Number(result[i].amount) + Number(item.Amount),
+                        }
+                    }
+                    else return item
+                })
+            }   
+        }
+        SendResponse(result2, 200, res)
+    }
+    else {
+        next(new AppError("Wrong branch", 404))
+    }
+});
