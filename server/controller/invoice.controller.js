@@ -5,7 +5,7 @@ const Branch = db.branch;
 const InvoiceItem = db.invoiceitem;
 const Op = db.Sequelize.Op;
 const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
+const AppError = require('../utils/AppError');
 const SendResponse = require('../utils/sendResponse');
 // Create and Save a new Invoice
 exports.create = (req, res) => {

@@ -3,7 +3,7 @@ const Feature = db.feature;
 const Product = db.product;
 const Op = db.Sequelize.Op;
 const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
+const AppError = require('../utils/AppError');
 const SendResponse = require('../utils/sendResponse');
 // Create and Save a new Feature
 exports.create = (req, res) => {

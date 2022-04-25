@@ -2,7 +2,7 @@ const db = require("../models");
 const ProductImage = db.productimage;
 const Op = db.Sequelize.Op;
 const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
+const AppError = require('../utils/AppError');
 const SendResponse = require('../utils/sendResponse');
 // Create and Save a new ProductImage
 exports.create = (req, res) => {

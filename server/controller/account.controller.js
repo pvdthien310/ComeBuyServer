@@ -6,7 +6,7 @@ const Op = db.Sequelize.Op;
 const Branch = db.branch;
 const aes256 = require('aes256');
 const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
+const AppError = require('../utils/AppError');
 const SendResponse = require('../utils/sendResponse');
 const { isEmpty } = require("../utils/validate");
 // Create and Save a new Account
