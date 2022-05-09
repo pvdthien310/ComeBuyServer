@@ -57,9 +57,6 @@ exports.create = catchAsync(async (req, res, next) => {
           }
           /// existed branch
           else {
-            console.log('aaa')
-            console.log(response.userID)
-            console.log(req.body.branchID)
             const num = await Branch.update({
               userid: response.userID,
               branchID: req.body.branchID
@@ -67,7 +64,6 @@ exports.create = catchAsync(async (req, res, next) => {
               .catch(err => {
                 next(new AppError("Error updating Branch with id=" + id + ", Error: " + err, 500))
               })
-            console.log(num)
             if (num == 1)
               SendResponse("Add Manager with existed branch successfully", 200, res)
             else
@@ -133,6 +129,11 @@ exports.findOne = catchAsync(async (req, res, next) => {
         model: Cart,
         as: "cart",
         attributes: ["productid", "amount"],
+      },
+      {
+        model: Branch,
+        as: "branch",
+        attributes: ["branchid", "address"],
       }
     ]
   })
@@ -145,7 +146,26 @@ exports.findOne = catchAsync(async (req, res, next) => {
 
 exports.findOnebyEmail = catchAsync(async (req, res, next) => {
   const email = req.params.email;
-  const data = await Account.findOne({ where: { email: email } })
+  const data = await Account.findOne({
+    where: { email: email },
+    include: [
+      {
+        model: Notification,
+        as: "notification",
+        attributes: ["userID", "body", "notiid"],
+      },
+      {
+        model: Cart,
+        as: "cart",
+        attributes: ["productid", "amount"],
+      },
+      {
+        model: Branch,
+        as: "branch",
+        attributes: ["branchid", "address"],
+      }
+    ]
+  })
     .catch(err => {
       next(new AppError("Error retrieving Account with id=" + id + " Error: " + err, 500))
     });
