@@ -228,7 +228,6 @@ exports.addFeature = catchAsync(async (req, res, next) => {
 exports.deleteAndUpdateFeature = catchAsync(async (req, res, next) => {
     const productId = req.body.productID
     const featureId = req.body.featureID
-    console.log(req.body)
     const prd = await Product.findByPk(productId)
         .catch((err) => {
             return next(new AppError(">> Error while finding Product: " + err, 500))

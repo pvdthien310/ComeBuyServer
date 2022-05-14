@@ -7,6 +7,8 @@ module.exports = app => {
     router.get("/", comments.findAll);
     // Retrieve a single product image with id
     router.get("/:id", comments.findOne);
+    // Retrieve a comment by product id 
+    router.get("/findByProductID/:id", comments.findByProductID);
     // Update a product image with id
     router.put("/:id", comments.update);
     // Delete a product image with id

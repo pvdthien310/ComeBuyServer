@@ -73,6 +73,11 @@ module.exports = (sequelize, Sequelize) => {
         // year: {
         //     type: Sequelize.INTEGER,
         //     field: 'year',
+        // },
+        // keyIndex: {
+        //     type: Sequelize.INTEGER,
+        //     field: 'keyIndex',
+        //     unique: true
         // }
     },
         {

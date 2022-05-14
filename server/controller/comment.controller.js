@@ -2,13 +2,14 @@ const db = require("../models");
 const Comment = db.comment;
 const Account = db.account;
 const Op = db.Sequelize.Op;
+const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/AppError');
+const SendResponse = require('../utils/sendResponse');
 // Create and Save a new Comment
-exports.create = (req, res) => {
+exports.create = catchAsync(async (req, res, next) => {
     // Validate request
     if (!req.body.body || !req.body.productID || !req.body.userID) {
-        res.status(400).send({
-            message: "Content can not be empty!"
-        });
+        next(new AppError("Content can not be empty!", 400))
         return;
     }
     // Create a Comment
@@ -19,17 +20,25 @@ exports.create = (req, res) => {
         postDate: req.body.postDate
     };
     // Save Comment in the database
-    Comment.create(comment)
-        .then(data => {
-            res.send(data);
+    const data = await Comment.create(comment)
+    if (data) {
+        const listComment = await Comment.findAll({
+            where: { productid: req.body.productID },
+            include: [
+                {
+                    model: Account,
+                    as: "account",
+                    attributes: ["name", "email", "avatar"],
+                }
+            ]
         })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while creating the Comment."
-            });
-        });
-};
+        if (listComment)
+            SendResponse(listComment, 200, res)
+        else next(new AppError("Error Load Comment", 500))
+    }
+    else next(new AppError("Some error occurred while creating the Comment.", 500))
+    
+});
 // Retrieve all Comments from the database.
 exports.findAll = (req, res) => {
     Comment.findAll({
@@ -37,7 +46,7 @@ exports.findAll = (req, res) => {
             {
                 model: Account,
                 as: "account",
-                attributes: ["name","email"],
+                attributes: ["name", "email"],
             }
         ]
     })
@@ -70,6 +79,26 @@ exports.findOne = (req, res) => {
             });
         });
 };
+//Find comment by product id 
+exports.findByProductID = catchAsync(async (req, res, next) => {
+    const id = req.params.id;
+    const data = await Comment.findAll({
+        where: { productid: req.params.id },
+        include: [
+
+            {
+                model: Account,
+                as: "account",
+                attributes: ["userid", "name", "avatar"],
+            }
+        ]
+    })
+        .catch(err => next(new AppError("Error retrieving Comment with id=" + id, 500)))
+
+    if (data) SendResponse(data, 200, res)
+    else next(new AppError(`Cannot find Comment with id=${id}.`, 404))
+});
+
 // Update a Comment by the id in the request
 exports.update = (req, res) => {
     const id = req.params.id;

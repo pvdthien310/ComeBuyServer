@@ -90,7 +90,6 @@ exports.update = catchAsync(async (req, res, next) => {
             .catch(err => {
                 next(new AppError("Error updating Branch with id=" + id + ", Error: " + err, 500))
             })
-        console.log(num)
         if (num == 1)
             SendResponse("Branch was updated successfully.", 200, res)
         else
