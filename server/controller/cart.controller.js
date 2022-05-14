@@ -201,7 +201,7 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
     const id = req.params.id;
     Cart.update(req.body, {
-        where: { id: id }
+        where: { cartID: id }
     })
         .then(num => {
             if (num == 1) {
@@ -224,7 +224,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
     const id = req.params.id;
     Cart.destroy({
-        where: { id: id }
+        where: { cartID: id }
     })
         .then(num => {
             if (num == 1) {
