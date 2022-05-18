@@ -34,6 +34,7 @@ require("./routes/invoiceItem.routes")(app);
 require("./routes/email.routes")(app);
 require("./routes/cloudinary.routes")(app);
 require("./routes/stock.routes")(app);
+require("./routes/patronDiscount.routes")(app);
 
 module.exports = app;
 

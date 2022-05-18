@@ -99,7 +99,7 @@ exports.update = catchAsync(async (req, res, next) => {
 exports.delete = (req, res) => {
     const id = req.params.id;
     Branch.destroy({
-        where: { Branchid: id }
+        where: { branchid: id }
     })
         .then(num => {
             if (num == 1) {

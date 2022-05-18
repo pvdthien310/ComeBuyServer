@@ -16,10 +16,10 @@ exports.create = catchAsync(async (req, res, next) => {
     next(new AppError("Some params is missing or null!", 404))
     return;
   }
-  else if (req.body.role == 'admin') {
-    next(new AppError("Role is not allowed to be admin", 500))
-    return;
-  }
+  // else if (req.body.role == 'admin') {
+  //   next(new AppError("Role is not allowed to be admin", 500))
+  //   return;
+  // }
   // Create a Account
   const account = {
     name: req.body.name,
@@ -33,6 +33,7 @@ exports.create = catchAsync(async (req, res, next) => {
     address: req.body.address,
     role: req.body.role,
     sex: req.body.sex,
+    score: 0
   };
   // Save Account in the database
   const result = await Account.findOne({ where: { email: req.body.email } })

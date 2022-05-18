@@ -36,8 +36,12 @@ exports.create = catchAsync(async (req, res, next) => {
         battery: req.body.battery,
         warranty: req.body.warranty,
         promotion: req.body.promotion,
-        price: req.body.price
+        price: req.body.price,
+        year: req.body.year,
+        isPublished: false
+        // keyIndex: req.body.keyIndex
     };
+
     // Save Product in the database
     const data = await Product.create(product)
     if (data)

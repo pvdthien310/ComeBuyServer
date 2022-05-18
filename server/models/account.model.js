@@ -47,11 +47,11 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       field: "bio"
     },
-    // score: {
-    //   type: Sequelize.INTEGER,
-    //   field: "score",
-    //   default: 0
-    // },
+    score: {
+      type: Sequelize.INTEGER,
+      field: "score",
+      default: 0
+    },
 
   },
     {

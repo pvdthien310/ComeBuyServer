@@ -15,9 +15,10 @@ exports.create = (req, res) => {
     }
     // Create a ProductImage
     const productImage = {
-        productID: req.body.productID,
+        productid: req.body.productID,
         imageURL: req.body.imageURL
     };
+    console.log(productImage)
     // Save ProductImage in the database
     ProductImage.create(productImage)
         .then(data => {
@@ -130,7 +131,7 @@ exports.deleteAll = (req, res) => {
 exports.deleteImagesOfProduct = catchAsync(async (req, res, next) => {
     const id = req.params.productID;
     const data = await ProductImage.destroy({
-        where: { productID: id }
+        where: { productid: id }
     }).catch(err => {
         next(new AppError("Error delete ProductImage with ProductID=" + id, 500));
     })
@@ -145,7 +146,7 @@ exports.deleteImagesOfProduct = catchAsync(async (req, res, next) => {
 
 exports.AddManyImage = catchAsync(async (req,res,next) => {
     const Images = req.body;
-    const data = await ProductImage.bulkCreate(Images).catch(err => {
+    const data = await ProductImage.bulkCreate(Images , {returning: true}).catch(err => {
         next(new AppError("Error Add Many ProductImage with ProductID", 500));
     })
     if (data) SendResponse(data,200,res)

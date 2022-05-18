@@ -70,15 +70,20 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             field: 'promotion',
         },
-        // year: {
-        //     type: Sequelize.INTEGER,
-        //     field: 'year',
-        // },
-        // keyIndex: {
-        //     type: Sequelize.INTEGER,
-        //     field: 'keyIndex',
-        //     unique: true
-        // }
+        year: {
+            type: Sequelize.INTEGER,
+            field: 'year',
+        },
+        keyIndex: {
+            type: Sequelize.INTEGER,
+            field: 'keyIndex',
+            autoIncrement: true
+        },
+        isPublished: {
+            type: Sequelize.BOOLEAN,
+            field: 'ispublished',
+            default: false
+        }
     },
         {
             freezeTableName: true,

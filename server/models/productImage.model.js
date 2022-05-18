@@ -6,11 +6,11 @@ module.exports = (sequelize, Sequelize) => {
             primaryKey: true,
             field: 'productimageid',
         },
-        productID: {
-            type: Sequelize.UUID,
-            defaultValue: Sequelize.UUIDV4,
-            field: 'productid',
-        },
+        // productID: {
+        //     type: Sequelize.UUID,
+        //     defaultValue: Sequelize.UUIDV4,
+        //     field: 'productid',
+        // },
         imageURL: {
             type: Sequelize.STRING(512),
             field: 'imageurl'
