@@ -35,6 +35,7 @@ require("./routes/email.routes")(app);
 require("./routes/cloudinary.routes")(app);
 require("./routes/stock.routes")(app);
 require("./routes/patronDiscount.routes")(app);
+require("./routes/favorite.routes")(app);
 
 module.exports = app;
 

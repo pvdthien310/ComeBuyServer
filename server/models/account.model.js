@@ -82,6 +82,10 @@ module.exports = (sequelize, Sequelize) => {
       as: "cart",
       foreignKey: "userid",
     });
+    Account.hasMany(models.favorite, {
+      as: "favorite",
+      foreignKey: "favoriteid",
+    });
     Account.hasOne(models.branch, { foreignKey: 'userid' });
   }
   return Account;

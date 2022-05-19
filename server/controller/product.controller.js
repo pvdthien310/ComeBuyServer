@@ -248,3 +248,22 @@ exports.deleteAndUpdateFeature = catchAsync(async (req, res, next) => {
     SendResponse(`>> update Product id=${prd.productID} to Feature successfully`, 200, res)
     // }); 
 });
+
+exports.ChangeIsPublished = catchAsync(async (req, res, next) => {
+    const productId = req.body.productID
+    const prd = await Product.findByPk(productId)
+        .catch((err) => {
+            return next(new AppError(">> Error while finding Product: " + err, 500))
+        });
+
+    if (!prd) {
+        return next(new AppError("Product not found!", 404))
+    }
+    // return Feature.findByPk(featureId).then(async (feature) => {
+    //     if (!feature) {
+    //         return next(new AppError("Product not found!", 404))
+    //     }
+    await prd.setFeature(featureId);
+    SendResponse(`>> update Product id=${prd.productID} to Feature successfully`, 200, res)
+    // }); 
+});

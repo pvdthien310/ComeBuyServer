@@ -109,6 +109,7 @@ module.exports = (sequelize, Sequelize) => {
             foreignKey: "productid",
         });
         Product.hasOne(models.cart, { foreignKey: 'productid' });
+        Product.hasOne(models.favorite, { foreignKey: 'productid' });
         Product.hasOne(models.invoiceitem, { foreignKey: 'productid' });
         Product.hasOne(models.stock, {
             foreignKey: 'productid',

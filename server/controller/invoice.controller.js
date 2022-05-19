@@ -10,7 +10,7 @@ const SendResponse = require('../utils/sendResponse');
 // Create and Save a new Invoice
 exports.create = (req, res) => {
     // Validate request
-    if (!req.body.branchID || !req.body.userID) {
+    if (!req.body.branchID || !req.body.userID || !req.body.address) {
         res.status(400).send({
             message: "Content can not be empty!"
         });
@@ -24,7 +24,8 @@ exports.create = (req, res) => {
         isChecked: req.body.isChecked,
         isPaid: req.body.isPaid,
         userid: req.body.userID,
-        branchid: req.body.branchID
+        branchid: req.body.branchID,
+        address: req.body.address
     };
     // Save Comment in the database
     Invoice.create(invoice)

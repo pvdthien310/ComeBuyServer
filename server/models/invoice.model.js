@@ -31,6 +31,10 @@ module.exports = (sequelize, Sequelize) => {
             field: 'ispaid',
             default: false
         },
+        address: {
+            type: Sequelize.STRING(256),
+            field: 'address'
+        },
 
 
     },

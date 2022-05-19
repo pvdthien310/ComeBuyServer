@@ -4,6 +4,7 @@ const Notification = db.notification;
 const Cart = db.cart;
 const Op = db.Sequelize.Op;
 const Branch = db.branch;
+const Favorite = db.favorite;
 const aes256 = require('aes256');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
@@ -103,6 +104,11 @@ exports.findAll = catchAsync(async (req, res, next) => {
         model: Branch,
         as: "branch",
         attributes: ["branchid", "address"],
+      },
+      {
+        model: Favorite,
+        as: "favorite",
+        attributes: ["productid"],
       }
     ]
   })
