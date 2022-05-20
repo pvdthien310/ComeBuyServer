@@ -1,3 +1,5 @@
+const { authenToken } = require("../middlewares/authenMiddleware");
+
 module.exports = app => {
     const accounts = require("../controller/account.controller");
     var router = require("express").Router();
@@ -11,7 +13,7 @@ module.exports = app => {
     // Retrieve a single account with id
     router.get("/email/:email", accounts.findOnebyEmail);
     // Update a account with id
-    router.put("/:id", accounts.update);
+    router.put("/:id",accounts.update);
     /// Update password
     router.put("/updatePassword/:id", accounts.updatePassword);
     // Delete a account with id

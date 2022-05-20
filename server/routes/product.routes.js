@@ -1,3 +1,5 @@
+const { authenToken } = require("../middlewares/authenMiddleware");
+
 module.exports = app => {
     const product = require("../controller/product.controller");
     var router = require("express").Router();
@@ -8,7 +10,7 @@ module.exports = app => {
     // Retrieve a single product with id
     router.get("/:id", product.findOne);
     // Update a product with id
-    router.put("/:id", product.update);
+    router.put("/:id",authenToken, product.update);
     // Delete a product with id
     router.delete("/:id", product.delete);
     // Delete all products 
