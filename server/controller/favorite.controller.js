@@ -21,8 +21,7 @@ exports.create = (req, res) => {
             if (data == null) {
                 const favorite = {
                     userid: req.body.userID,
-                    productid: req.body.productID,
-                    amount: req.body.amount
+                    productid: req.body.productID
                 };
                 Favorite.create(favorite)
                     .then(data => {

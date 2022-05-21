@@ -84,7 +84,7 @@ module.exports = (sequelize, Sequelize) => {
     });
     Account.hasMany(models.favorite, {
       as: "favorite",
-      foreignKey: "favoriteid",
+      foreignKey: "userid",
     });
     Account.hasOne(models.branch, { foreignKey: 'userid' });
   }
