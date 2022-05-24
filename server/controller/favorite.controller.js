@@ -223,7 +223,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
     const id = req.params.id;
     Favorite.destroy({
-        where: { FavoriteID: id }
+        where: { favoriteID: id }
     })
         .then(num => {
             if (num == 1) {
