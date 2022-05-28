@@ -23,8 +23,7 @@ module.exports = (sequelize, Sequelize) => {
     Branch.associate = function (models) {
 
         Branch.belongsTo(models.account, {
-            foreignKey: 'userid',
-            // onDelete: 'SET NULL',
+            foreignKey: 'userid'
         });
         Branch.hasMany(models.invoice, {
             as: "invoice",
