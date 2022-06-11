@@ -19,7 +19,6 @@ app.get('/', (req, res) => {
 });
 
 //config route 
-require("./routes/computer.routes")(app);
 require("./routes/account.routes")(app);
 require("./routes/authentication.routes")(app);
 require("./routes/product.routes")(app);
