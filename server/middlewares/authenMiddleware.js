@@ -1,17 +1,18 @@
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const SendResponse = require('../utils/SendResponse');
 
 function authenToken(req, res, next) {
     const authorizationHeader = req.headers['x-access-token'];
     const token = authorizationHeader;
 
     if (!token) {
-        res.status(401).send('Token het han');
+        SendResponse("Please put token with your high-level request!", 401, res)
         return;
     }
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
         console.log('accept token')
         if (err) {
-            res.sendStatus(401);
+            SendResponse("Expired or incorrect token!", 401, res)
             return;
         }
         next();
