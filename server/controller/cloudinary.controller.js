@@ -1,6 +1,6 @@
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
-const SendResponse = require('../utils/sendResponse');
+const SendResponse = require('../utils/SendResponse');
 const { cloudinary } = require('../config/cloudinary.config')
 
 exports.uploadImages = catchAsync(async (req, res, next) => {

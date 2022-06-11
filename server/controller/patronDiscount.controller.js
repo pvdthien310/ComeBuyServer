@@ -2,7 +2,7 @@ const db = require("../models");
 const PatronDiscount = db.patrondiscount;
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
-const SendResponse = require('../utils/sendResponse');
+const SendResponse = require('../utils/SendResponse');
 // Create and Save a new PatronDiscount
 exports.create = catchAsync(async (req, res, next) => {
     // Validate request

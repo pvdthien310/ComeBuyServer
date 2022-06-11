@@ -8,7 +8,7 @@ const Favorite = db.favorite;
 const aes256 = require('aes256');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
-const SendResponse = require('../utils/sendResponse');
+const SendResponse = require('../utils/SendResponse');
 const { isEmpty } = require("../utils/validate");
 // Create and Save a new Account
 exports.create = catchAsync(async (req, res, next) => {

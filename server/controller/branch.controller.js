@@ -4,7 +4,7 @@ const Account = db.account;
 const Op = db.Sequelize.Op;
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
-const SendResponse = require('../utils/sendResponse');
+const SendResponse = require('../utils/SendResponse');
 // Create and Save a new Branch
 const checkRole = async (userID) => {
     const response = await Account.findByPk(userID)

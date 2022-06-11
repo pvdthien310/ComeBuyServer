@@ -5,7 +5,7 @@ const Branch = db.branch;
 const Op = db.Sequelize.Op;
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
-const SendResponse = require('../utils/sendResponse');
+const SendResponse = require('../utils/SendResponse');
 // Create and Save a new Stock
 exports.create = catchAsync(async (req, res, next) => {
     // Validate request
