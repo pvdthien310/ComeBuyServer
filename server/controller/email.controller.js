@@ -1,11 +1,12 @@
 var nodemailer = require('nodemailer');
 
 exports.sendVerify = (req, res) => {
+    console.log(req.body)
     var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
             user: "comebuyproject@gmail.com",
-            pass: "comebuyproject@1"
+            pass: "lcpemcxxwehefgof"
         }
         // auth: {
         //     user: process.env.EMAILAPP,
@@ -13,12 +14,12 @@ exports.sendVerify = (req, res) => {
         // }
     });
     var mailOptions = {
-        from: process.env.EMAILAPP,
+        from: "comebuyproject@gmail.com",
         to: req.body.to,
         subject: req.body.subject,
         text: req.body.text
     };
-
+    console.log(mailOptions)
     transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
             res.send(error);
