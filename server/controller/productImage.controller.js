@@ -18,7 +18,7 @@ exports.create = (req, res) => {
         productid: req.body.productID,
         imageURL: req.body.imageURL
     };
-    console.log(productImage)
+    // console.log(productImage)
     // Save ProductImage in the database
     ProductImage.create(productImage)
         .then(data => {
