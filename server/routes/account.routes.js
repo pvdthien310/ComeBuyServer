@@ -9,16 +9,16 @@ module.exports = app => {
   router.get("/", authenToken, accounts.findAll);
   // // Retrieve all published computers
   // Retrieve a single account with id
-  router.get("/:id",authenToken, accounts.findOne);
+  router.get("/:id", authenToken, accounts.findOne);
   // Retrieve a single account with id
-  router.get("/email/:email", authenToken, accounts.findOnebyEmail);
+  router.get("/email/:email", accounts.findOnebyEmail);
   // Update a account with id
-  router.put("/:id",authenToken, accounts.update);
+  router.put("/:id", authenToken, accounts.update);
   /// Update password
   router.put("/updatePassword/:id", accounts.updatePassword);
   // Delete a account with id
-  router.delete("/:id",authenToken, accounts.delete);
+  router.delete("/:id", authenToken, accounts.delete);
   // Delete all accounts 
-  router.delete("/",authenToken, accounts.deleteAll);
+  router.delete("/", authenToken, accounts.deleteAll);
   app.use('/api/account', router);
 };
